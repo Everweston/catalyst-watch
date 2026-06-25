@@ -95,6 +95,11 @@ header{background:var(--navy);color:#fff}
 .lean-bullish{color:#13703a;background:#e2f5ea;border-color:#bfe6cf}
 .lean-bearish{color:#a02525;background:#fbe4e4;border-color:#f0c4c4}
 .lean-neutral{color:#48555f;background:#eef1f5;border-color:#dde3ea}
+.pin-low{color:#13703a;background:#e2f5ea;border-color:#bfe6cf}
+.pin-partial{color:#8a5a00;background:#fff2d6;border-color:#f0dca0}
+.pin-mostly{color:#5a6470;background:#eef1f5;border-color:#dde3ea}
+.edge{font-size:12px;color:#1b3a5a;background:#f3f7fb;border-left:3px solid var(--navy);padding:5px 9px;border-radius:0 6px 6px 0;margin-top:6px;line-height:1.42}
+.edge b{color:var(--navy)}
 .odds{display:flex;align-items:center;gap:6px;margin-left:2px}
 .odds-label{font-size:10.5px;font-weight:700;color:var(--muted)}
 .odds-bar{width:74px;height:8px;border-radius:5px;background:#e6ebf1;overflow:hidden}
@@ -132,7 +137,7 @@ const SECTIONS=[
  ["coverage","Coverage","The book we cover — catalysts across all names. Tickers get added as we pick up coverage."],
  ["portfolio","My Portfolio","Current holdings (NVDA, RDDT, DVN, AMD, VERA, GDOT, VBNK, COMP) and their next catalysts."],
  ["ideas","Catalyst Ideas","Stocks I've researched and think have an upcoming catalyst that can add value — <b>not</b> coverage or holdings. My picks."],
- ["biotech","Biotech","Biotechs with a significant binary catalyst. <b>Odds = my success prediction (PoS)</b> for the readout/decision."]];
+ ["biotech","Biotech","<b>Not-priced-in screen</b> — upcoming FDA / data catalysts where I think the odds beat what the market is pricing, so there's <b>room to re-rate</b> (the VERA setup), not de-risked names that already ran. <b>Success</b> = my PoS; <b>Priced-in</b> = how much is already in the stock (favoring Low)."]];
 const cats=PAYLOAD.catalysts||[];
 let activeSection="coverage", activeTypes=new Set(), tf="all", q="";
 
@@ -154,11 +159,16 @@ function passes(c){
 function ratingHTML(c){
   const imp=(c.impact||'medium'), lean=(c.lean||'neutral'), o=c.odds_positive;
   const leanTxt={bullish:'▲ Bullish',bearish:'▼ Bearish',neutral:'▬ Neutral'}[lean]||lean;
-  const oLabel=activeSection==='biotech'?'Success':'Odds +';
+  const isBio=(c.section==='biotech');
+  const oLabel=isBio?'Success':'Odds +';
   let oh='';
   if(typeof o==='number'){oh='<span class="odds"><span class="odds-label">'+oLabel+'</span><span class="odds-bar"><span class="odds-fill" style="width:'+Math.max(3,Math.min(100,o))+'%;background:'+oddsColor(o)+'"></span></span><span class="odds-num" style="color:'+oddsColor(o)+'">'+Math.round(o)+'%</span></span>';}
+  let pin='';
+  if(isBio && c.priced_in){const pl={low:'Priced-in: Low',partial:'Priced-in: Partial',mostly:'Priced-in: Mostly'}[c.priced_in]||('Priced-in: '+c.priced_in);
+    pin='<span class="rpill pin-'+c.priced_in+'">'+pl+'</span>';}
+  const edge=(isBio && c.edge)?'<div class="edge"><b>Why it’s mispriced:</b> '+esc(c.edge)+'</div>':'';
   return '<div class="rate"><span class="rpill imp-'+imp+'">Impact '+imp+'</span>'+
-    '<span class="rpill lean-'+lean+'">'+leanTxt+'</span>'+oh+'</div>'+
+    '<span class="rpill lean-'+lean+'">'+leanTxt+'</span>'+oh+pin+'</div>'+edge+
     (c.take?'<div class="take"><b>My take:</b> '+esc(c.take)+'</div>':'');
 }
 function render(){
@@ -214,7 +224,7 @@ document.getElementById('q').oninput=e=>{q=e.target.value.trim().toLowerCase();r
 document.getElementById('asof').textContent='data as of '+(PAYLOAD.generated||'');
 const soonN=cats.filter(c=>{const n=dayDiff(c.date_iso);return n!==null&&n>=0&&n<=7;}).length;
 document.getElementById('foot').innerHTML='<b>'+cats.length+'</b> catalysts across 4 sections &middot; <b>'+soonN+'</b> in the next 7 days &middot; data as of '+(PAYLOAD.generated||'')+'.<br>'+
-  '<b>Ratings (Impact / Lean / Odds / Take) are the analyst’s own judgment</b> — in Biotech, "Success" is a predicted probability of a positive readout/decision (PoS). Dates are public-web-sourced (company IR, earnings calendars, FDA, SEC), <b>not a live terminal</b> — confirm before trading. "~ est" = estimated date. Refresh on demand.';
+  '<b>Ratings (Impact / Lean / Odds / Take) are the analyst’s own judgment.</b> The <b>Biotech</b> tab is a <b>mispricing screen</b>: "Success" = my probability of success (PoS) and "Priced-in" = how much the market has already discounted — the edge is the gap (favoring low-priced names with room to re-rate). Whether something is "priced in" should be confirmed against the options-implied move / valuation. Dates are public-web-sourced (company IR, FDA, SEC), <b>not a live terminal</b> — confirm before trading. "~ est" = estimated date. Refresh on demand.';
 document.getElementById('sdesc').innerHTML=SECTIONS[0][2];
 buildTypeChips();render();
 </script></body></html>"""
