@@ -1,5 +1,7 @@
 # Catalyst Watch
 
+**Live:** https://everweston.github.io/catalyst-watch/
+
 A daily-refreshable, navy/yellow web dashboard of **upcoming, potentially stock-moving catalysts** across your coverage list + watchlist — earnings, investor days, FDA / data readouts, product launches, deal & vote dates, lockups, index changes. Each entry shows **why it matters** and is tagged with a source + confidence and whether the date is confirmed or estimated.
 
 Built for situational awareness. Dates are **web-sourced (no live terminal)** — verify before trading.
