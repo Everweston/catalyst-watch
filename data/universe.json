@@ -1,9 +1,10 @@
 {
-  "_comment": "Catalyst Watch universe. 'coverage' = tracked book; 'watchlist' = extra tickers (paste more here, then refresh). Watchlist names render with a gold ticker badge.",
+  "_comment": "Catalyst Watch universe. coverage = the book (add as we go); portfolio = holdings; watchlist = extra tickers. Each catalyst in catalysts.json also carries its own 'section' (coverage|portfolio|ideas|biotech). 'ideas' and 'biotech' are analyst-selected and live only in catalysts.json.",
   "coverage": [
     "DVN","DLTR","PINS","SBMO","BILL","FOUR","MKTW",
     "MELI","RDDT","FIGR","ZETA","YSS","GENI","IDIA",
     "HPE","IQV","VTRS","MGM","VOYA","KMX","COMP","LW","AAP","CC","FUN","XRAY","SNDA","LILA","IART","AGESA","QDEL","GMTL","FVRR","YEXT","PAL","TIG"
   ],
+  "portfolio": ["NVDA","RDDT","DVN","AMD","VERA","GDOT","VBNK","COMP"],
   "watchlist": []
 }
